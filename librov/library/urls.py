@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 from .views import(
      BookViewSet,TransactionViewset,NotificationListView,
      NotificationCreateView, UserProfileView, UserRegistrationView,
-     Reviews, BookRequestView
+     Reviews, BookRequestView, GeneralNotificationView
 )
 
 router = DefaultRouter()
@@ -26,5 +26,6 @@ urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('requests/', BookRequestView.as_view(), name='book-requests'),
     path('notifications/', NotificationListView.as_view(), name='user-notifications'),
-    path('notifications/create/', NotificationCreateView.as_view(), name='create_notifications')
+    path('notifications/create/', NotificationCreateView.as_view(), name='create_notifications'),
+    path('notifications/general/', GeneralNotificationView.as_view(), name='general-notifications')
 ]

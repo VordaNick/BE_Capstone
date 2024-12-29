@@ -26,7 +26,7 @@ class BookSerializer(serializers.ModelSerializer):
     average_rating = serializers.SerializerMethodField()
     class Meta:
         model = Book
-        fields = ['id', 'title', 'author', 'isbn', 'published_date', 'available_copies', 'average_rating']
+        fields = ['id', 'title', 'author', 'genre', 'isbn', 'published_date', 'available_copies', 'average_rating']
         
     def get_average_rating(self, obj):
         reviews = obj.reviews.all()
@@ -63,6 +63,10 @@ class NotificationSerializer(serializers.ModelSerializer):
         model = Notification
         fields = ['recipient', 'message', 'created_at']
         read_only_fields = ['recipient', 'created_at']
+        
+        
+class GeneralNotificationSerializer(serializers.Serializer):
+    message = serializers.CharField(max_length=255)
         
 
 class UserProfileSerializer(serializers.ModelSerializer):

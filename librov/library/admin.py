@@ -17,7 +17,7 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ['title', 'author', 'isbn', 'published_date', 'available_copies']
+    list_display = ['id', 'title', 'author', 'isbn', 'published_date', 'available_copies']
     search_fields = ['title', 'author', 'isbn']
     list_filter = ['available_copies']
 

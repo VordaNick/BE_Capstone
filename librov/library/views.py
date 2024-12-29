@@ -1,10 +1,10 @@
-from rest_framework import viewsets, status, generics, permissions
+from rest_framework import viewsets, status, generics, permissions, views
 from rest_framework.response import Response
 from .models import Book, Transaction, Notification, CustomUser, Review, BookRequest
 from .serializers import(
      BookSerializer, ReviewSerializer, TransactionSerializer,
      NotificationSerializer, UserProfileSerializer,
-     UserRegistrationSerializer, BookRequestSerializer
+     UserRegistrationSerializer, BookRequestSerializer, GeneralNotificationSerializer
 )
 from .permissions import IsStaffOrReadOnly, IsAuthorOrReadOnly
 import datetime
@@ -22,8 +22,8 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['title', 'author', 'isbn', 'available_copies']
-    search_fields = ['title', 'author', 'isbn']
+    filterset_fields = ['title', 'author', 'isbn', 'available_copies', 'genre']
+    search_fields = ['title', 'author', 'isbn', 'genre']
     ordering_fields = ['title', 'published_date']
     
     
@@ -113,7 +113,7 @@ class UserRegistrationView(generics.CreateAPIView):
         return Response(
             {
                 "message": {
-                    "Welcome to Librov, your account has been successfully created. Below is a token unique to your account, that you can use for subsequent authentication. if you need a new one, simply send a POST request with your username and password to library/tokens."
+                    f"Welcome to Librov, your account has been successfully created and your User ID is {user.id}. Below is a token unique to your account, that you can use for authentication. if you need a new one, simply send a POST request with your username and password to library/tokens."
                 },
                 "tokens": {
                     "refresh": refresh_token,
@@ -135,7 +135,6 @@ class Reviews(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['book', 'user']
-    search_fields = ['book', 'user']
     ordering_fields = ['rating']
     
 
@@ -171,6 +170,21 @@ class BookRequestView(generics.ListCreateAPIView):
             return [permissions.IsAuthenticated()]
         return [permissions.IsAdminUser()]
     
+    
+class GeneralNotificationView(views.APIView):
+    permission_classes = [permissions.IsAdminUser]
+    
+    def post(self, request):
+        serializer = GeneralNotificationSerializer(data=request.data)
+        if serializer.is_valid():
+            message = serializer.validated_data['message']
+            recipients = CustomUser.objects.all()
+            notifications = [
+                Notification(recipient=user, message=message) for user in recipients
+            ]
+            Notification.objects.bulk_create(notifications)
+            return Response({'detail': 'Notification sent to all users.'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     
