@@ -51,10 +51,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only_fields = ['user', 'created_at', 'updated_at', "book_title"]
         
 class BookRequestSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
     class Meta:
         model = BookRequest
-        fields = ['id', 'user', 'title', 'author', 'description', 'created_at']
-        read_only_fields = ['user', 'created_at']
+        fields = ['id', 'user', 'username', 'title', 'author', 'description', 'created_at']
+        read_only_fields = ['user', 'username', 'created_at']
         
 class NotificationSerializer(serializers.ModelSerializer):
     recipient = serializers.ReadOnlyField(source='recipient.username')

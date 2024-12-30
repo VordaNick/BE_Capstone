@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Book, Transaction, Review, BookRequest
+from .models import CustomUser, Book, Transaction, Review, BookRequest, Notification
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
@@ -36,3 +36,7 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(BookRequest)
 class BookRequestAdmin(admin.ModelAdmin):
     list_display = ['user', 'title', 'author', 'created_at']
+    
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'recipient', 'message']

@@ -56,7 +56,7 @@ class TransactionViewset(viewsets.ViewSet):
 
         # Logic to ensure a book can only be returned once
         if transaction.return_date is not None:
-            return Response({"error": "This book has already been returned."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "This transaction has already been settled."}, status=status.HTTP_400_BAD_REQUEST)
 
         # If everything checks out, successfullly return the book
         transaction.return_date = datetime.datetime.now()
@@ -113,7 +113,7 @@ class UserRegistrationView(generics.CreateAPIView):
         return Response(
             {
                 "message": {
-                    f"Welcome to Librov, your account has been successfully created and your User ID is {user.id}. Below is a token unique to your account, that you can use for authentication. if you need a new one, simply send a POST request with your username and password to library/tokens."
+                    f"Welcome to Librov, your account has been successfully created and your User ID is {user.id}. Below is a token unique to your account, that you can use for authentication. If you need a new one, simply send a POST request with your username and password to library/tokens."
                 },
                 "tokens": {
                     "refresh": refresh_token,
